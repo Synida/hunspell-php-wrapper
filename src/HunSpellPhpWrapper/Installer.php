@@ -20,7 +20,7 @@ class Installer
     /**
      * @param Event $event
      */
-    public static function configure(Event $event = null)
+    public static function configure(Event $event)
     {
         $event->getIO()->write('Running post-update hooks.');
 
