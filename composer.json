@@ -1,0 +1,29 @@
+{
+    "name": "synida/hunspell-php-wrapper",
+    "license": "MIT",
+    "description": "PHP wrapper for HunSpell with threading support. Focuses only for the suggestions atm.",
+    "keywords": ["spelling", "hunspell", "wrapper", "threading", "multithreading"],
+    "homepage": "https://github.com/Synida/hunspell-php-wrapper",
+    "type": "library",
+    "authors": [
+        {
+            "name": "David Hlavati",
+            "email": "david.hlavati@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "HunSpellPhpWrapper\\": "src/HunSpellPhpWrapper"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6"
+    },
+    "require": {
+        "composer/composer": "^1.9",
+        "ext-json": "*"
+    },
+    "scripts": {
+        "post-install-cmd": "HunSpellPhpWrapper\\Installer::configure"
+    }
+}
