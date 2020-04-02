@@ -281,6 +281,8 @@ class HunSpell
     {
         $result = [];
 
+        $text = str_replace('"', '', $text);
+
         // Counts the words in the text.
         $wordCount = $this->getWordCount($text);
 

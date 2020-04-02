@@ -23,6 +23,9 @@
         "composer/composer": "^1.9",
         "ext-json": "*"
     },
+    "suggest": {
+        "ext-parallel": "*"
+    },
     "scripts": {
         "post-install-cmd": "HunSpellPhpWrapper\\Installer::configure"
     }

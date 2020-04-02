@@ -5,6 +5,7 @@
  */
 
 use HunSpellPhpWrapper\exception\InvalidResponseTypeException;
+use HunSpellPhpWrapper\exception\InvalidThreadNumberException;
 use HunSpellPhpWrapper\HunSpell;
 use PHPUnit\Framework\TestCase;
 
@@ -118,5 +119,19 @@ class SuggestionTest extends TestCase
         }
 
         $this->assertNotEmpty((new HunSpell())->suggest('penguins'), 'Works fine with parallel module');
+    }
+
+    /**
+     * Testing the quotation mark bug.
+     *
+     * @return void
+     * @throws InvalidResponseTypeException
+     * @throws InvalidThreadNumberException
+     * @author Synida Pry
+     */
+    public function testQuotationMarkBug()
+    {
+        $result = (new HunSpell())->suggest('"be on not to be. This is the qwestion"');
+        $this->assertNotEmpty($result, 'No problem with quotation marks');
     }
 }
