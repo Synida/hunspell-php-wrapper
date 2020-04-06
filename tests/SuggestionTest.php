@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class SuggestionTest
- * @package tests
  */
 class SuggestionTest extends TestCase
 {
