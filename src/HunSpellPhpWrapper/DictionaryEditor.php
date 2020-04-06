@@ -149,6 +149,51 @@ class DictionaryEditor
         $this->message = "The defined dictionary({$path}) does not contain this word({$word})";
         return false;
     }
+    /**
+     * Modifies and existing word in a dictionary.
+     *
+     * @param string $path
+     * @param string $word
+     * @param string $modifiedWord
+     * @return bool
+     * @author Synida Pry
+     */
+    public function editWord($path, $word, $modifiedWord)
+    {
+        $dictionaryContent = file_get_contents($path);
+
+        if (strpos($dictionaryContent, $word) !== false) {
+            preg_replace('/(\r\n)|\r/', "\n", $dictionaryContent);
+            $words = explode("\n", $dictionaryContent);
+            foreach ($words as $wordKey => $currentWord) {
+                if ($word === $currentWord) {
+                    $words[$wordKey] = $modifiedWord;
+                    break;
+                }
+            }
+            file_put_contents($path, ltrim(implode("\n", $words), "\n"));
+
+            return true;
+        }
+
+        $this->message = "The defined dictionary({$path}) does not contain this word({$word})";
+        return false;
+    }
+
+    /**
+     * Lists the existing word in a dictionary.
+     *
+     * @param string $path
+     * @return array
+     * @author Synida Pry
+     */
+    public function listWords($path)
+    {
+        $dictionaryContent = file_get_contents($path);
+
+        preg_replace('/(\r\n)|\r/', "\n", $dictionaryContent);
+        return explode("\n", $dictionaryContent);
+    }
 
     /**
      * Returns with the logged un/successful object message
