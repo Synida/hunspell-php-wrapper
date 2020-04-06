@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by Synida Pry.
- * Copyright © 2020. All rights reserved.
+ * Copyright © 2020. TakeNote. All rights reserved.
  */
 
 namespace HunSpellPhpWrapper\exception;
@@ -9,10 +9,10 @@ namespace HunSpellPhpWrapper\exception;
 use Exception;
 
 /**
- * Class InvalidResponseTypeException
+ * Class FileOperationException
  * @package HunSpellPhpWrapper\exception
  */
-class InvalidResponseTypeException extends Exception
+class FileOperationException extends Exception
 {
 
 }

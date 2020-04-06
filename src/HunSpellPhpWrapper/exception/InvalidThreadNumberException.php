@@ -10,6 +10,7 @@ use Exception;
 
 /**
  * Class InvalidThreadNumberException
+ * @package HunSpellPhpWrapper\exception
  */
 class InvalidThreadNumberException extends Exception
 {
