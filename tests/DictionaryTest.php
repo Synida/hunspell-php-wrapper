@@ -9,12 +9,13 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class DictionaryTest
- *
+ * TODO: Test the exceptions too
  */
 class DictionaryTest extends TestCase
 {
     /**
      * Tests the dictionary's functionality
+     * TODO: this test is too long, separate the functionality tests into smaller tests
      *
      * @return void
      * @author Synida Pry
@@ -50,6 +51,16 @@ class DictionaryTest extends TestCase
         $fileWords = explode("\n", $fileContent);
 
         $this->assertNotContains($words[0], $fileWords);
+
+        $dictionaryWords = $dictionaryEditor->listWords($dictionaryPath);
+        $this->assertNotEmpty($dictionaryWords);
+
+        $modifiedWord = 'apple';
+        $dictionaryEditor->editWord($dictionaryPath, $words[1], $modifiedWord);
+        $fileContent = file_get_contents($dictionaryPath);
+        $fileWords = explode("\n", $fileContent);
+
+        $this->assertContains($modifiedWord, $fileWords);
 
         $dictionaryEditor->delete($dictionaryPath);
 
