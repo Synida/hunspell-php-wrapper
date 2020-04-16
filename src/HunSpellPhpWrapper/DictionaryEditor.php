@@ -113,7 +113,7 @@ class DictionaryEditor
         preg_replace('/(\r\n)|\r/', "\n", $dictionaryContent);
         $words = explode("\n", $dictionaryContent);
         $words[] = $word;
-        sort($words);
+        natcasesort($words);
         $wordsString = ltrim(implode("\n", $words), "\n");
         file_put_contents($path, $wordsString);
 
