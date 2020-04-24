@@ -192,7 +192,9 @@ class DictionaryEditor
         $dictionaryContent = file_get_contents($path);
 
         preg_replace('/(\r\n)|\r/', "\n", $dictionaryContent);
-        return explode("\n", $dictionaryContent);
+        $result = explode("\n", $dictionaryContent);
+
+        return is_string($result) ? [$result] : $result;
     }
 
     /**
