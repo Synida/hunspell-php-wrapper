@@ -110,11 +110,11 @@ class DictionaryEditor
             return false;
         }
 
-        preg_replace('/(\r\n)|\r/', "\n", $dictionaryContent);
-        $words = explode("\n", $dictionaryContent);
+        preg_replace('/(\r\n)|\r/', "\r\n", $dictionaryContent);
+        $words = explode("\r\n", $dictionaryContent);
         $words[] = $word;
         natcasesort($words);
-        $wordsString = ltrim(implode("\n", $words), "\n");
+        $wordsString = ltrim(implode("\r\n", $words), "\r\n");
         file_put_contents($path, $wordsString);
 
         return true;
@@ -133,15 +133,15 @@ class DictionaryEditor
         $dictionaryContent = file_get_contents($path);
 
         if (strpos($dictionaryContent, $word) !== false) {
-            preg_replace('/(\r\n)|\r/', "\n", $dictionaryContent);
-            $words = explode("\n", $dictionaryContent);
+            preg_replace('/(\r\n)|\r/', "\r\n", $dictionaryContent);
+            $words = explode("\r\n", $dictionaryContent);
             foreach ($words as $wordKey => $currentWord) {
                 if ($word === $currentWord) {
                     unset($words[$wordKey]);
                     break;
                 }
             }
-            file_put_contents($path, ltrim(implode("\n", $words), "\n"));
+            file_put_contents($path, ltrim(implode("\r\n", $words), "\r\n"));
 
             return true;
         }
@@ -163,15 +163,15 @@ class DictionaryEditor
         $dictionaryContent = file_get_contents($path);
 
         if (strpos($dictionaryContent, $word) !== false) {
-            preg_replace('/(\r\n)|\r/', "\n", $dictionaryContent);
-            $words = explode("\n", $dictionaryContent);
+            preg_replace('/(\r\n)|\r/', "\r\n", $dictionaryContent);
+            $words = explode("\r\n", $dictionaryContent);
             foreach ($words as $wordKey => $currentWord) {
                 if ($word === $currentWord) {
                     $words[$wordKey] = $modifiedWord;
                     break;
                 }
             }
-            file_put_contents($path, ltrim(implode("\n", $words), "\n"));
+            file_put_contents($path, ltrim(implode("\r\n", $words), "\r\n"));
 
             return true;
         }
@@ -191,8 +191,8 @@ class DictionaryEditor
     {
         $dictionaryContent = file_get_contents($path);
 
-        preg_replace('/(\r\n)|\r/', "\n", $dictionaryContent);
-        $result = explode("\n", $dictionaryContent);
+        preg_replace('/(\r\n)|\r/', "\r\n", $dictionaryContent);
+        $result = explode("\r\n", $dictionaryContent);
 
         return is_string($result) ? [$result] : $result;
     }
