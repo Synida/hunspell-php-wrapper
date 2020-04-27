@@ -24,6 +24,22 @@ class DictionaryEditor
     const DICTIONARY_EXTENSION = 'dic';
 
     /**
+     * Ruleset extension
+     *
+     * @const string
+     */
+    const RULESET_EXTENSION = 'aff';
+
+    /**
+     * Template file extension for custom dictionary words.
+     * In the template files one can store the custom words which would be used for generating
+     * custom dictionaries.
+     *
+     * @const string
+     */
+    const TEMPLATE_EXTENSION = 'tpl';
+
+    /**
      * Contains messages about the last logged un/successful object operation.
      *
      * @var string
@@ -42,7 +58,9 @@ class DictionaryEditor
         $pathParts = explode('.', $path);
         $extension = end($pathParts);
 
-        if ($extension !== static::DICTIONARY_EXTENSION) {
+        if (!in_array($extension, [
+            static::DICTIONARY_EXTENSION, static::RULESET_EXTENSION, static::TEMPLATE_EXTENSION
+        ])) {
             $this->message = "Invalid extension({$extension})";
             return false;
         }
@@ -79,7 +97,9 @@ class DictionaryEditor
         $pathParts = explode('.', $path);
         $extension = end($pathParts);
 
-        if ($extension !== static::DICTIONARY_EXTENSION) {
+        if (!in_array($extension, [
+            static::DICTIONARY_EXTENSION, static::RULESET_EXTENSION, static::TEMPLATE_EXTENSION
+        ])) {
             $this->message = "Invalid extension({$extension})";
             return false;
         }
@@ -112,8 +132,14 @@ class DictionaryEditor
 
         preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
         $words = explode(PHP_EOL, $dictionaryContent);
+
+        if (isset($words[0]) && is_numeric($words[0])) {
+            unset($words[0]);
+        }
+
         $words[] = $word;
         natcasesort($words);
+        array_unshift($words, count($words));
         $wordsString = ltrim(implode(PHP_EOL, $words), PHP_EOL);
         file_put_contents($path, $wordsString);
 
@@ -135,12 +161,19 @@ class DictionaryEditor
         if (strpos($dictionaryContent, $word) !== false) {
             preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
             $words = explode(PHP_EOL, $dictionaryContent);
+
+            if (isset($words[0]) && is_numeric($words[0])) {
+                unset($words[0]);
+            }
+
             foreach ($words as $wordKey => $currentWord) {
                 if ($word === $currentWord) {
                     unset($words[$wordKey]);
                     break;
                 }
             }
+
+            array_unshift($words, count($words));
             file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
 
             return true;
@@ -165,12 +198,19 @@ class DictionaryEditor
         if (strpos($dictionaryContent, $word) !== false) {
             preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
             $words = explode(PHP_EOL, $dictionaryContent);
+
+            if (isset($words[0]) && is_numeric($words[0])) {
+                unset($words[0]);
+            }
+
             foreach ($words as $wordKey => $currentWord) {
                 if ($word === $currentWord) {
                     $words[$wordKey] = $modifiedWord;
                     break;
                 }
             }
+
+            array_unshift($words, count($words));
             file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
 
             return true;
@@ -193,6 +233,10 @@ class DictionaryEditor
 
         preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
         $result = explode(PHP_EOL, $dictionaryContent);
+
+        if (isset($result[0]) && is_numeric($result[0])) {
+            unset($result[0]);
+        }
 
         return is_string($result) ? [$result] : $result;
     }
