@@ -130,7 +130,7 @@ class DictionaryEditor
             return false;
         }
 
-        preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
+        $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
         $words = explode(PHP_EOL, $dictionaryContent);
 
         if (isset($words[0]) && is_numeric($words[0])) {
@@ -159,7 +159,7 @@ class DictionaryEditor
         $dictionaryContent = file_get_contents($path);
 
         if (strpos($dictionaryContent, $word) !== false) {
-            preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
+            $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
             $words = explode(PHP_EOL, $dictionaryContent);
 
             if (isset($words[0]) && is_numeric($words[0])) {
@@ -196,7 +196,7 @@ class DictionaryEditor
         $dictionaryContent = file_get_contents($path);
 
         if (strpos($dictionaryContent, $word) !== false) {
-            preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
+            $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
             $words = explode(PHP_EOL, $dictionaryContent);
 
             if (isset($words[0]) && is_numeric($words[0])) {
@@ -231,7 +231,7 @@ class DictionaryEditor
     {
         $dictionaryContent = file_get_contents($path);
 
-        preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
+        $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
         $result = explode(PHP_EOL, $dictionaryContent);
 
         if (isset($result[0]) && is_numeric($result[0])) {
