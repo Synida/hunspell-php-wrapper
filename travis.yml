@@ -1,0 +1,17 @@
+language: php
+
+git:
+  quiet: true
+
+php:
+  - 7.4
+
+before_install:
+  - sudo apt-get install hunspell-en-us
+  - travis_retry composer self-update
+
+install:
+  - travis_retry composer update
+
+script:
+  - vendor/bin/phpunit tests/
