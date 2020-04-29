@@ -24,7 +24,7 @@ class SuggestionTest extends TestCase
      */
     public function testBasic()
     {
-        $spellChecker = new HunSpell();
+        $spellChecker = new HunSpell('en_US.utf8', 'en_US');
 
         $result = $spellChecker->suggest('Haters gonn hate. Potatoes gonna potate. Crocodiles gonna crocodile.');
 
@@ -53,7 +53,7 @@ class SuggestionTest extends TestCase
      */
     public function testIncorrect()
     {
-        $spellChecker = new HunSpell();
+        $spellChecker = new HunSpell('en_US.utf8', 'en_US');
 
         $result = $spellChecker->suggest('asdasdasdasdasdasd');
 
@@ -78,7 +78,7 @@ class SuggestionTest extends TestCase
      */
     public function testArrayResponse()
     {
-        $spellChecker = new HunSpell('en_GB.utf8', 'en_GB', HunSpell::ARRAY_RESPONSE);
+        $spellChecker = new HunSpell('en_US.utf8', 'en_US', HunSpell::ARRAY_RESPONSE);
 
         $result = $spellChecker->suggest('You shall passsss here');
 
@@ -117,7 +117,10 @@ class SuggestionTest extends TestCase
             return;
         }
 
-        $this->assertNotEmpty((new HunSpell())->suggest('penguins'), 'Works fine with parallel module');
+        $this->assertNotEmpty(
+            (new HunSpell('en_US.utf8', 'en_US'))->suggest('penguins'),
+            'Works fine with parallel module'
+        );
     }
 
     /**
@@ -130,7 +133,8 @@ class SuggestionTest extends TestCase
      */
     public function testQuotationMarkBug()
     {
-        $result = (new HunSpell())->suggest('"be on not to be. This is the qwestion"');
+        $result = (new HunSpell('en_US.utf8', 'en_US'))
+            ->suggest('"be on not to be. This is the qwestion"');
         $this->assertNotEmpty($result, 'No problem with quotation marks');
     }
 }
