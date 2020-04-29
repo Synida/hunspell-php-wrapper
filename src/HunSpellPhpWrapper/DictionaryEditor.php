@@ -125,6 +125,8 @@ class DictionaryEditor
     {
         $dictionaryContent = file_get_contents($path);
 
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+
         if (strpos($dictionaryContent, $word) !== false) {
             $this->message = 'The word already exists in the database';
             return false;
@@ -144,7 +146,11 @@ class DictionaryEditor
         });
 
         natcasesort($words);
-        array_unshift($words, count($words));
+
+        if ($ext !== static::TEMPLATE_EXTENSION) {
+            array_unshift($words, count($words));
+        }
+
         $wordsString = ltrim(implode(PHP_EOL, $words), PHP_EOL);
         file_put_contents($path, $wordsString);
 
@@ -162,6 +168,8 @@ class DictionaryEditor
     public function deleteWord($path, $word)
     {
         $dictionaryContent = file_get_contents($path);
+
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
 
         if (strpos($dictionaryContent, $word) !== false) {
             $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
@@ -181,7 +189,11 @@ class DictionaryEditor
             $words = array_filter($words, function($value) {
                 return !is_null($value) && $value !== '' && $value !== PHP_EOL;
             });
-            array_unshift($words, count($words));
+
+            if ($ext !== static::TEMPLATE_EXTENSION) {
+                array_unshift($words, count($words));
+            }
+
             file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
 
             return true;
@@ -203,6 +215,8 @@ class DictionaryEditor
     {
         $dictionaryContent = file_get_contents($path);
 
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+
         if (strpos($dictionaryContent, $word) !== false) {
             $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
             $words = explode(PHP_EOL, $dictionaryContent);
@@ -221,7 +235,11 @@ class DictionaryEditor
             $words = array_filter($words, function($value) {
                 return !is_null($value) && $value !== '' && $value !== PHP_EOL;
             });
-            array_unshift($words, count($words));
+
+            if ($ext !== static::TEMPLATE_EXTENSION) {
+                array_unshift($words, count($words));
+            }
+
             file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
 
             return true;
