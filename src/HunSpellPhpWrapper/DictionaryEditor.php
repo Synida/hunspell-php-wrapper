@@ -6,7 +6,7 @@
 
 namespace HunSpellPhpWrapper;
 
-use Exception;
+use HunSpellPhpWrapper\exception\FileOperationException;
 
 /**
  * Class DictionaryEditor
@@ -71,7 +71,7 @@ class DictionaryEditor
             fwrite($file,'');
 
             fclose($file);
-        } catch (Exception $exception) {
+        } catch (FileOperationException $exception) {
             $this->message = 'Failed to create new dictionary: ' . $exception->getMessage();
             return false;
         }
@@ -138,6 +138,11 @@ class DictionaryEditor
         }
 
         $words[] = $word;
+
+        $words = array_filter($words, function($value) {
+            return !is_null($value) && $value !== '' && $value !== PHP_EOL;
+        });
+
         natcasesort($words);
         array_unshift($words, count($words));
         $wordsString = ltrim(implode(PHP_EOL, $words), PHP_EOL);
@@ -173,6 +178,9 @@ class DictionaryEditor
                 }
             }
 
+            $words = array_filter($words, function($value) {
+                return !is_null($value) && $value !== '' && $value !== PHP_EOL;
+            });
             array_unshift($words, count($words));
             file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
 
@@ -210,6 +218,9 @@ class DictionaryEditor
                 }
             }
 
+            $words = array_filter($words, function($value) {
+                return !is_null($value) && $value !== '' && $value !== PHP_EOL;
+            });
             array_unshift($words, count($words));
             file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
 
