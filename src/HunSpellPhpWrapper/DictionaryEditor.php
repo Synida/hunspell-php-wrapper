@@ -225,6 +225,11 @@ class DictionaryEditor
                 unset($words[0]);
             }
 
+            if (in_array($modifiedWord, $words)) {
+                $this->message = 'This word is already in the dictionary';
+                return false;
+            }
+
             foreach ($words as $wordKey => $currentWord) {
                 if ($word === $currentWord) {
                     $words[$wordKey] = $modifiedWord;
