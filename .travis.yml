@@ -4,6 +4,8 @@ git:
   quiet: true
 
 php:
+  - 7.2
+  - 7.3
   - 7.4
 
 before_install:
@@ -14,4 +16,8 @@ install:
   - travis_retry composer update
 
 script:
+  - mkdir -p build/logs
   - vendor/bin/phpunit tests/
+
+after_script:
+  - php vendor/bin/coveralls -v
