@@ -22,7 +22,7 @@ use parallel\Runtime;
  *
  * @property int $maxThreads
  * @property int $minWordPerThread
- * @property string $dictionaries
+ * @property string $dictionary
  * @property string $encoding
  * @property string $responseType
  * @property Closure $findCommandClosure
@@ -101,11 +101,11 @@ class HunSpell
     const ARRAY_RESPONSE = 'array';
 
     /**
-     * Selected dictionary or dictionaries separated by coma(,)
+     * Selected dictionary - hunspell can handle only one
      *
      * @var string
      */
-    protected $dictionaries = 'en_GB';
+    protected $dictionary = 'en_GB';
 
     /**
      * Encoding of the text
@@ -151,7 +151,7 @@ class HunSpell
      * HunSpell constructor.
      *
      * @param string $encoding
-     * @param string $dictionaries
+     * @param string $dictionary
      * @param string $responseType
      * @param int $threads
      * @param int $wordThreadRatio
@@ -161,7 +161,7 @@ class HunSpell
      */
     public function __construct(
         $encoding = 'en_GB.utf8',
-        $dictionaries = 'en_GB',
+        $dictionary = 'en_GB',
         $responseType = 'json',
         $threads = 1,
         $wordThreadRatio = 1
@@ -176,16 +176,16 @@ class HunSpell
 
         $this->responseType = $responseType;
         $this->encoding = $encoding;
-        $this->dictionaries = $dictionaries;
+        $this->dictionary = $dictionary;
 
         $this->maxThreads = $threads ?: Configuration::MAX_THREADS;
         $this->minWordPerThread = $wordThreadRatio ?: Configuration::MIN_WORD_PER_THREAD;
 
         $this->findCommandClosure = extension_loaded('parallel')
-            ? static function (Channel $channel, $text, $encoding, $dictionaries) {
+            ? static function (Channel $channel, $text, $encoding, $dictionary) {
                 $encode = strncasecmp(PHP_OS, 'WIN', 3) === 0 ? '' : "LANG=\"{$encoding}\"; ";
 
-                $channel->send(shell_exec("{$encode}echo \"{$text}\" | hunspell -d \"{$dictionaries}\""));
+                $channel->send(shell_exec("{$encode}echo \"{$text}\" | hunspell -d \"{$dictionary}\""));
             } : null;
     }
 
@@ -217,26 +217,26 @@ class HunSpell
     }
 
     /**
-     * Returns with the selected dictionaries
+     * Returns with the selected dictionary
      *
      * @return string
      * @author Synida Pry
      */
-    public function getDictionaries()
+    public function getDictionary()
     {
-        return $this->dictionaries;
+        return $this->dictionary;
     }
 
     /**
-     * Sets the dictionary/dictionaries
+     * Sets the dictionary
      *
-     * @param string $dictionaries
+     * @param string $dictionary
      * @return void
      * @author Synida Pry
      */
-    public function setDictionaries($dictionaries)
+    public function setDictionary($dictionary)
     {
-        $this->dictionaries = $dictionaries;
+        $this->dictionary = $dictionary;
     }
 
     /**
@@ -277,7 +277,7 @@ class HunSpell
         $text = str_replace('"', '', $text);
 
         // Counts the words in the text.
-        $wordCount = $this->getWordCount($text);
+        $wordCount = str_word_count($text);
 
         $spellCheckResults =
             extension_loaded('parallel') && $this->maxThreads > 1 && $wordCount > $this->minWordPerThread
@@ -334,18 +334,6 @@ class HunSpell
     }
 
     /**
-     * Counts the words in the text.
-     *
-     * @param string $text
-     * @return int
-     * @author Synida Pry
-     */
-    public function getWordCount($text)
-    {
-        return str_word_count($text);
-    }
-
-    /**
      * Splits the text into smaller chunks and process them with threads.
      *
      * @param string $text
@@ -382,7 +370,7 @@ class HunSpell
                 }
 
                 $threads[] = (new Runtime())
-                    ->run($this->findCommandClosure, [$channel, $chunk, $this->encoding, $this->dictionaries]);
+                    ->run($this->findCommandClosure, [$channel, $chunk, $this->encoding, $this->dictionary]);
             }
 
             for ($i = 0; $i < $threadCount; $i++) {
@@ -423,7 +411,7 @@ class HunSpell
     {
         $encode = strncasecmp(PHP_OS, 'WIN', 3) === 0 ? '' : "LANG=\"{$this->encoding}\"; ";
 
-        return shell_exec("{$encode}echo \"{$text}\" | hunspell -d \"{$this->dictionaries}\"");
+        return shell_exec("{$encode}echo \"{$text}\" | hunspell -d \"{$this->dictionary}\"");
     }
 
     /**
