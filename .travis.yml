@@ -17,7 +17,6 @@ matrix:
 before_install:
   - sudo apt-get install hunspell php-pear
   - printf "\n" | pecl install parallel
-  - echo "extension=parallel.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - travis_retry composer self-update
 
 install:
