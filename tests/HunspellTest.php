@@ -100,9 +100,9 @@ class HunspellTest extends TestCase
         $spellChecker = new HunSpell();
 
         $encoding = 'utf-8';
-        $spellChecker->setDictionary($encoding);
+        $spellChecker->setEncoding($encoding);
 
-        $usedEncoding = $spellChecker->getDictionary();
+        $usedEncoding = $spellChecker->getEncoding();
         $this->assertEquals($encoding, $usedEncoding);
     }
 }
