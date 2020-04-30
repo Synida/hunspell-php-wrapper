@@ -9,9 +9,9 @@ namespace HunSpellPhpWrapper;
 use Closure;
 use Exception;
 use HunSpellPhpWrapper\config\Configuration;
-use HunSpellPhpWrapper\validation\InputValidator;
 use HunSpellPhpWrapper\exception\InvalidResponseTypeException;
 use HunSpellPhpWrapper\exception\InvalidThreadNumberException;
+use HunSpellPhpWrapper\validation\InputValidator;
 use parallel\Channel;
 use parallel\Error;
 use parallel\Runtime;
@@ -159,8 +159,13 @@ class HunSpell
      * @throws InvalidThreadNumberException
      * @author Synida Pry
      */
-    public function __construct($encoding = 'en_GB.utf8', $dictionaries = 'en_GB', $responseType = 'json', $threads = 1, $wordThreadRatio = 1)
-    {
+    public function __construct(
+        $encoding = 'en_GB.utf8',
+        $dictionaries = 'en_GB',
+        $responseType = 'json',
+        $threads = 1,
+        $wordThreadRatio = 1
+    ) {
         $this->inputValidator = new InputValidator();
 
         // Validates the response type
@@ -258,18 +263,6 @@ class HunSpell
     }
 
     /**
-     * Counts the words in the text.
-     *
-     * @param string $text
-     * @return int
-     * @author Synida Pry
-     */
-    public function getWordCount($text)
-    {
-        return str_word_count($text);
-    }
-
-    /**
      * Tries to find words from the dictionary. Returns only with the suggestions if any of them is incorrect.
      *
      * @param string $text
@@ -288,10 +281,10 @@ class HunSpell
 
         $spellCheckResults =
             extension_loaded('parallel') && $this->maxThreads > 1 && $wordCount > $this->minWordPerThread
-            // Splits the text into smaller chunks and process them with threads.
-            ? $this->findWithThreading($text, $wordCount)
-            // Executes the find command on a text.
-            : $this->findCommand($text);
+                // Splits the text into smaller chunks and process them with threads.
+                ? $this->findWithThreading($text, $wordCount)
+                // Executes the find command on a text.
+                : $this->findCommand($text);
 
         preg_replace('/(\r\n)|\r|\n/', "\n", $spellCheckResults);
         $resultLines = explode("\n", trim($spellCheckResults));
@@ -341,6 +334,18 @@ class HunSpell
     }
 
     /**
+     * Counts the words in the text.
+     *
+     * @param string $text
+     * @return int
+     * @author Synida Pry
+     */
+    public function getWordCount($text)
+    {
+        return str_word_count($text);
+    }
+
+    /**
      * Splits the text into smaller chunks and process them with threads.
      *
      * @param string $text
@@ -362,7 +367,9 @@ class HunSpell
         $result = '';
         $threads = [];
         try {
-            $threadCount = (int)ceil($wordCount / $chunkSize > $optimalThread ? $optimalThread : $wordCount / $chunkSize);
+            $threadCount = (int)ceil(
+                $wordCount / $chunkSize > $optimalThread ? $optimalThread : $wordCount / $chunkSize
+            );
             for ($i = 0; $i < $threadCount; $i++) {
                 $chunk = '';
                 $initPosition = $i * $chunkSize;
@@ -406,19 +413,17 @@ class HunSpell
     }
 
     /**
-     * Sets the optimal thread number.
+     * Executes the find command on a text.
      *
-     * @param int $maxThreads
-     * @return void
-     * @throws InvalidThreadNumberException
+     * @param string $text
+     * @return string
      * @author Synida Pry
      */
-    public function setMaxThreads($maxThreads)
+    protected function findCommand($text)
     {
-        // Validates the thread number.
-        $this->inputValidator->validateThreadNumber($maxThreads);
+        $encode = strncasecmp(PHP_OS, 'WIN', 3) === 0 ? '' : "LANG=\"{$this->encoding}\"; ";
 
-        $this->maxThreads = $maxThreads;
+        return shell_exec("{$encode}echo \"{$text}\" | hunspell -d \"{$this->dictionaries}\"");
     }
 
     /**
@@ -433,16 +438,18 @@ class HunSpell
     }
 
     /**
-     * Executes the find command on a text.
+     * Sets the optimal thread number.
      *
-     * @param string $text
-     * @return string
+     * @param int $maxThreads
+     * @return void
+     * @throws InvalidThreadNumberException
      * @author Synida Pry
      */
-    protected function findCommand($text)
+    public function setMaxThreads($maxThreads)
     {
-        $encode = strncasecmp(PHP_OS, 'WIN', 3) === 0 ? '' : "LANG=\"{$this->encoding}\"; ";
+        // Validates the thread number.
+        $this->inputValidator->validateThreadNumber($maxThreads);
 
-        return shell_exec("{$encode}echo \"{$text}\" | hunspell -d \"{$this->dictionaries}\"");
+        $this->maxThreads = $maxThreads;
     }
 }

@@ -41,7 +41,6 @@ class DictionaryTest extends TestCase
 
     /**
      * Tests the dictionary's functionality
-     * TODO: this test is too long, separate the functionality tests into smaller tests
      *
      * @return void
      * @author Synida Pry
@@ -130,6 +129,26 @@ class DictionaryTest extends TestCase
             $this->assertTrue($result);
             $this->assertFileNotExists($dictionaryFilePath);
         }
+    }
+
+    /**
+     * Failing to create a dictionary file
+     *
+     * @return void
+     * @author Synida Pry
+     */
+    public function testCanNotCreateFile()
+    {
+        $path = $this->dictionaryDir . 'not/exists/dictionary.' . DictionaryEditor::DICTIONARY_EXTENSION;
+
+        $dictionaryEditor = new DictionaryEditor();
+
+        $result = $dictionaryEditor->create($path);
+        $this->assertFalse($result);
+        $this->assertStringContainsString(
+            'Failed to create new dictionary:',
+            $dictionaryEditor->getMessage()
+        );
     }
 
     /**
