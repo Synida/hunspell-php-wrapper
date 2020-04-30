@@ -33,13 +33,13 @@ class SuggestionTest extends TestCase
         $arrayResult = json_decode($result, true);
 
         $this->assertNotEmpty($arrayResult, 'Result array is not empty');
-        $this->assertInternalType('array', $arrayResult, 'Array conversion complete');
+        $this->assertIsArray($arrayResult, 'Array conversion complete');
         foreach ($arrayResult as $suggestion) {
             $this->assertArrayHasKey(HunSpell::MISSPELLED_WORD_KEY, $suggestion);
             $this->assertArrayHasKey(HunSpell::SUGGESTION_COUNT_KEY, $suggestion);
             $this->assertArrayHasKey(HunSpell::WORD_POSITION_KEY, $suggestion);
             $this->assertArrayHasKey(HunSpell::SUGGESTIONS_KEY, $suggestion);
-            $this->assertInternalType('array', $suggestion[HunSpell::SUGGESTIONS_KEY]);
+            $this->assertIsArray($suggestion[HunSpell::SUGGESTIONS_KEY]);
         }
     }
 
@@ -62,7 +62,7 @@ class SuggestionTest extends TestCase
         $arrayResult = json_decode($result, true);
 
         $this->assertNotEmpty($arrayResult, 'Result array is not empty');
-        $this->assertInternalType('array', $arrayResult, 'Array conversion complete');
+        $this->assertIsArray($arrayResult, 'Array conversion complete');
         $this->assertArrayHasKey(0, $arrayResult);
         $this->assertArrayHasKey(HunSpell::MISSPELLED_WORD_KEY, $arrayResult[0]);
         $this->assertArrayHasKey(HunSpell::WORD_POSITION_KEY, $arrayResult[0]);
@@ -83,7 +83,7 @@ class SuggestionTest extends TestCase
         $result = $spellChecker->suggest('You shall passsss here');
 
         $this->assertNotEmpty($result);
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
     }
 
     /**
@@ -129,6 +129,7 @@ class SuggestionTest extends TestCase
      * @return void
      * @throws InvalidResponseTypeException
      * @throws InvalidThreadNumberException
+     * @throws Exception
      * @author Synida Pry
      */
     public function testQuotationMarkBug()
