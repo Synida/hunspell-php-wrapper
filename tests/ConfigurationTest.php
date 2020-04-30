@@ -25,11 +25,11 @@ class ConfigurationTest extends TestCase
     public function testConfiguration()
     {
         $cpuThreadNumber = Installer::configureMaxThreads();
-        $this->assertInternalType('numeric', $cpuThreadNumber);
+        $this->assertIsNumeric($cpuThreadNumber);
         $this->assertGreaterThan(0, $cpuThreadNumber);
 
         $wordPerThreadRatio = Installer::configureWordPerThreadRatio($cpuThreadNumber);
-        $this->assertInternalType('numeric', $wordPerThreadRatio);
+        $this->assertIsNumeric($wordPerThreadRatio);
         $this->assertGreaterThan(0, $wordPerThreadRatio);
     }
 }
