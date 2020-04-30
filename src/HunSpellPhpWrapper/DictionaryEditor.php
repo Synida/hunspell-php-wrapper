@@ -6,7 +6,7 @@
 
 namespace HunSpellPhpWrapper;
 
-use HunSpellPhpWrapper\exception\FileOperationException;
+use Exception;
 
 /**
  * Class DictionaryEditor
@@ -58,9 +58,14 @@ class DictionaryEditor
         $pathParts = explode('.', $path);
         $extension = end($pathParts);
 
-        if (!in_array($extension, [
-            static::DICTIONARY_EXTENSION, static::RULESET_EXTENSION, static::TEMPLATE_EXTENSION
-        ])) {
+        if (!in_array(
+            $extension,
+            [
+                static::DICTIONARY_EXTENSION,
+                static::RULESET_EXTENSION,
+                static::TEMPLATE_EXTENSION
+            ]
+        )) {
             $this->message = "Invalid extension({$extension})";
             return false;
         }
@@ -68,10 +73,10 @@ class DictionaryEditor
         try {
             $file = fopen($path, 'w');
 
-            fwrite($file,'');
+            fwrite($file, '');
 
             fclose($file);
-        } catch (FileOperationException $exception) {
+        } catch (Exception $exception) {
             $this->message = 'Failed to create new dictionary: ' . $exception->getMessage();
             return false;
         }
@@ -97,9 +102,14 @@ class DictionaryEditor
         $pathParts = explode('.', $path);
         $extension = end($pathParts);
 
-        if (!in_array($extension, [
-            static::DICTIONARY_EXTENSION, static::RULESET_EXTENSION, static::TEMPLATE_EXTENSION
-        ])) {
+        if (!in_array(
+            $extension,
+            [
+                static::DICTIONARY_EXTENSION,
+                static::RULESET_EXTENSION,
+                static::TEMPLATE_EXTENSION
+            ]
+        )) {
             $this->message = "Invalid extension({$extension})";
             return false;
         }
@@ -141,9 +151,12 @@ class DictionaryEditor
 
         $words[] = $word;
 
-        $words = array_filter($words, function($value) {
-            return !is_null($value) && $value !== '' && $value !== PHP_EOL;
-        });
+        $words = array_filter(
+            $words,
+            function ($value) {
+                return !is_null($value) && $value !== '' && $value !== PHP_EOL;
+            }
+        );
 
         natcasesort($words);
 
@@ -186,9 +199,12 @@ class DictionaryEditor
                 }
             }
 
-            $words = array_filter($words, function($value) {
-                return !is_null($value) && $value !== '' && $value !== PHP_EOL;
-            });
+            $words = array_filter(
+                $words,
+                function ($value) {
+                    return !is_null($value) && $value !== '' && $value !== PHP_EOL;
+                }
+            );
 
             if ($ext !== static::TEMPLATE_EXTENSION) {
                 array_unshift($words, count($words));
@@ -202,6 +218,7 @@ class DictionaryEditor
         $this->message = "The defined dictionary({$path}) does not contain this word({$word})";
         return false;
     }
+
     /**
      * Modifies and existing word in a dictionary.
      *
@@ -225,6 +242,11 @@ class DictionaryEditor
                 unset($words[0]);
             }
 
+            if (in_array($modifiedWord, $words)) {
+                $this->message = 'This word is already in the dictionary';
+                return false;
+            }
+
             foreach ($words as $wordKey => $currentWord) {
                 if ($word === $currentWord) {
                     $words[$wordKey] = $modifiedWord;
@@ -232,9 +254,12 @@ class DictionaryEditor
                 }
             }
 
-            $words = array_filter($words, function($value) {
-                return !is_null($value) && $value !== '' && $value !== PHP_EOL;
-            });
+            $words = array_filter(
+                $words,
+                function ($value) {
+                    return !is_null($value) && $value !== '' && $value !== PHP_EOL;
+                }
+            );
 
             if ($ext !== static::TEMPLATE_EXTENSION) {
                 array_unshift($words, count($words));

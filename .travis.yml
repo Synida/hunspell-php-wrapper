@@ -6,7 +6,6 @@ git:
 php:
   - 7.2
   - 7.3
-  - 7.4
 
 matrix:
     fast_finish: true
@@ -16,7 +15,8 @@ matrix:
           - COVERALLS_FLAG="--coverage-clover build/logs/clover.xml"
 
 before_install:
-  - sudo apt-get install hunspell
+  - sudo apt-get install hunspell php-pear
+  - printf "\n" | pecl install parallel
   - travis_retry composer self-update
 
 install:

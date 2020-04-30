@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by Synida Pry.
- * Copyright © 2020. TakeNote. All rights reserved.
+ * Copyright © 2020. All rights reserved.
  */
 
 namespace HunSpellPhpWrapper\exception;
