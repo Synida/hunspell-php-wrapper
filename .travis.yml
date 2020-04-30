@@ -8,6 +8,13 @@ php:
   - 7.3
   - 7.4
 
+matrix:
+    fast_finish: true
+    include:
+      - php: 7.4
+        env:
+          - COVERALLS_FLAG="--coverage-clover build/logs/clover.xml"
+
 before_install:
   - sudo apt-get install hunspell
   - travis_retry composer self-update
@@ -17,7 +24,7 @@ install:
 
 script:
   - mkdir -p build/logs
-  - vendor/bin/phpunit tests/
+  - vendor/bin/phpunit ${COVERALLS_FLAG}
 
 after_script:
   - php vendor/bin/php-coveralls -v
