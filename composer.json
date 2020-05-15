@@ -25,6 +25,7 @@
         "ext-json": "*"
     },
     "suggest": {
+        "php": "^7.2",
         "ext-parallel": "*"
     },
     "scripts": {
