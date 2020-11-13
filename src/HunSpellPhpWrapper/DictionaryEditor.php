@@ -137,14 +137,14 @@ class DictionaryEditor
 
         $ext = pathinfo($path, PATHINFO_EXTENSION);
 
-        if (strpos($dictionaryContent, $word) !== false) {
-            $this->message = 'The word already exists in the database';
-            return false;
-        }
-
         // Check empty or invalid word
         if ($this->isInvalidWord($word)) {
             $this->message = 'This word is invalid';
+            return false;
+        }
+
+        if (strpos($dictionaryContent, $word) !== false) {
+            $this->message = 'The word already exists in the database';
             return false;
         }
 
