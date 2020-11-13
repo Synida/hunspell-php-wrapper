@@ -4,14 +4,27 @@ git:
   quiet: true
 
 php:
-  - 7.4
+  - 7.2
+  - 7.3
+
+matrix:
+    fast_finish: true
+    include:
+      - php: 7.4
+        env:
+          - COVERALLS_FLAG="--coverage-clover build/logs/clover.xml"
 
 before_install:
-  - sudo apt-get install hunspell
+  - sudo apt-get install hunspell php-pear
+  - printf "\n" | pecl install parallel
   - travis_retry composer self-update
 
 install:
   - travis_retry composer update
 
 script:
-  - vendor/bin/phpunit tests/
+  - mkdir -p build/logs
+  - vendor/bin/phpunit ${COVERALLS_FLAG}
+
+after_script:
+  - php vendor/bin/php-coveralls -v

@@ -17,7 +17,8 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^6"
+        "phpunit/phpunit": "^7",
+        "php-coveralls/php-coveralls": "^2.2"
     },
     "require": {
         "php": "^7.0",
@@ -26,6 +27,7 @@
         "ext-intl": "*"
     },
     "suggest": {
+        "php": "^7.2",
         "ext-parallel": "*"
     },
     "scripts": {
