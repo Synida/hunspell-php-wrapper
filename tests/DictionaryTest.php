@@ -307,4 +307,33 @@ class DictionaryTest extends TestCase
 
         unlink($dictionaryPath);
     }
+
+    /**
+     * Trying to add and edit invalid word
+     *
+     * @return void
+     * @author Synida Pry
+     */
+    public function testInvalidWord()
+    {
+        $dictionaryPath = $this->dictionaryDir . 'test.' . DictionaryEditor::DICTIONARY_EXTENSION;
+
+        $wordToEdit = 'word1';
+        $targetWord = '    ';
+        file_put_contents($dictionaryPath, $wordToEdit . PHP_EOL . $targetWord . PHP_EOL);
+
+        $dictionaryEditor = new DictionaryEditor();
+
+        $result = $dictionaryEditor->editWord($dictionaryPath, $wordToEdit, $targetWord);
+
+        $this->assertFalse($result);
+        $this->assertEquals('This word is invalid', $dictionaryEditor->getMessage());
+
+        $result = $dictionaryEditor->addWord($dictionaryPath, $targetWord);
+
+        $this->assertFalse($result);
+        $this->assertEquals('This word is invalid', $dictionaryEditor->getMessage());
+
+        unlink($dictionaryPath);
+    }
 }

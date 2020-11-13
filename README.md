@@ -31,7 +31,7 @@ You may install your own dictionaries for the hunspell.
 
 ## Spellchecker
 
-###Basic usage:
+### Basic usage:
 
 ```
 $results = (new HunSpell(

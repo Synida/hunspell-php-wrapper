@@ -137,6 +137,12 @@ class DictionaryEditor
 
         $ext = pathinfo($path, PATHINFO_EXTENSION);
 
+        // Check empty or invalid word
+        if ($this->isInvalidWord($word)) {
+            $this->message = 'This word is invalid';
+            return false;
+        }
+
         if (strpos($dictionaryContent, $word) !== false) {
             $this->message = 'The word already exists in the database';
             return false;
@@ -168,6 +174,22 @@ class DictionaryEditor
         file_put_contents($path, $wordsString);
 
         return true;
+    }
+
+    /**
+     * Check empty or invalid word
+     *
+     * @param string $word
+     * @return bool
+     * @author Synida Pry
+     */
+    protected function isInvalidWord($word)
+    {
+        if (empty(trim($word))) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -230,6 +252,12 @@ class DictionaryEditor
      */
     public function editWord($path, $word, $modifiedWord)
     {
+        // Check empty or invalid word
+        if ($this->isInvalidWord($modifiedWord)) {
+            $this->message = 'This word is invalid';
+            return false;
+        }
+
         $dictionaryContent = file_get_contents($path);
 
         $ext = pathinfo($path, PATHINFO_EXTENSION);
