@@ -163,4 +163,158 @@ class DictionaryTest extends TestCase
             $this->assertContains('Invalid extension', $dictionaryEditor->getMessage());
         }
     }
+
+    /**
+     * Testing the delete function with invalid path
+     *
+     * @return void
+     * @author Synida Pry
+     */
+    public function testInvalidPathDelete()
+    {
+        $randomPath = $this->dictionaryDir . 'randomPath123.' . DictionaryEditor::DICTIONARY_EXTENSION;
+
+        $dictionaryEditor = new DictionaryEditor();
+        $dictionaryEditor->delete($randomPath);
+
+        $this->assertStringContainsString("Path({$randomPath}) is invalid", $dictionaryEditor->getMessage());
+    }
+
+    /**
+     * Trying to duplicate a word in a dictionary with the add existing word method
+     *
+     * @return void
+     * @author Synida Pry
+     */
+    public function testAddExistingWordToDictionary()
+    {
+        $dictionaryPath = $this->dictionaryDir . 'test.' . DictionaryEditor::DICTIONARY_EXTENSION;
+
+        $this->assertFileNotExists($dictionaryPath);
+
+        $dictionaryEditor = new DictionaryEditor();
+        $dictionaryEditor->create($dictionaryPath);
+
+        $this->assertFileExists($dictionaryPath);
+
+        $word = 'sandcrawler';
+        $result = $dictionaryEditor->addWord($dictionaryPath, $word);
+
+        $this->assertTrue($result);
+
+        $dictionaryWords = explode(PHP_EOL, file_get_contents($dictionaryPath));
+        $this->assertIsArray($dictionaryWords);
+        $this->assertCount(2, $dictionaryWords);
+        $this->assertEquals(1, $dictionaryWords[0]);
+        $this->assertEquals($word, trim($dictionaryWords[1]));
+
+        $result = $dictionaryEditor->addWord($dictionaryPath, $word);
+
+        $this->assertFalse($result);
+        $this->assertEquals('The word already exists in the database', $dictionaryEditor->getMessage());
+    }
+
+    /**
+     * Trying to delete non existing word from the dictionary
+     *
+     * @return void
+     * @author Synida Pry
+     */
+    public function testDeleteNonExistingWord()
+    {
+        $dictionaryPath = $this->dictionaryDir . 'test.' . DictionaryEditor::DICTIONARY_EXTENSION;
+
+        $dictionaryEditor = new DictionaryEditor();
+        $dictionaryEditor->create($dictionaryPath);
+
+        $wordToDelete = 'flux-condenser';
+        $result = $dictionaryEditor->deleteWord($dictionaryPath, $wordToDelete);
+
+        $this->assertFalse($result);
+        $this->assertEquals(
+            "The defined dictionary({$dictionaryPath}) does not contain this word({$wordToDelete})",
+            $dictionaryEditor->getMessage()
+        );
+
+        $dictionaryEditor->delete($dictionaryPath);
+    }
+
+    /**
+     * Trying to modify non existing word
+     *
+     * @return void
+     * @author Synida Pry
+     */
+    public function testEditNonExistingWord()
+    {
+        $dictionaryPath = $this->dictionaryDir . 'test.' . DictionaryEditor::DICTIONARY_EXTENSION;
+
+        $dictionaryEditor = new DictionaryEditor();
+        $dictionaryEditor->create($dictionaryPath);
+
+        $wordToModify = 'flex-condenser';
+        $targetWord = 'flux-condenser';
+        $result = $dictionaryEditor->editWord($dictionaryPath, $wordToModify, $targetWord);
+
+        $this->assertFalse($result);
+        $this->assertEquals(
+            "The defined dictionary({$dictionaryPath}) does not contain this word({$wordToModify})",
+            $dictionaryEditor->getMessage()
+        );
+
+        $dictionaryEditor->delete($dictionaryPath);
+    }
+
+    /**
+     * Trying to edit a word to an another existing word
+     *
+     * @return void
+     * @author Synida Pry
+     */
+    public function testEditToExistingWord()
+    {
+        $dictionaryPath = $this->dictionaryDir . 'test.' . DictionaryEditor::DICTIONARY_EXTENSION;
+
+        $wordToEdit = 'word1';
+        $targetWord = 'word2';
+        file_put_contents($dictionaryPath, $wordToEdit . PHP_EOL . $targetWord . PHP_EOL);
+
+        $dictionaryEditor = new DictionaryEditor();
+
+        $result = $dictionaryEditor->editWord($dictionaryPath, $wordToEdit, $targetWord);
+
+        $this->assertFalse($result);
+        $this->assertEquals('This word is already in the dictionary', $dictionaryEditor->getMessage());
+
+        unlink($dictionaryPath);
+    }
+
+    /**
+     * Trying to add and edit invalid word
+     *
+     * @return void
+     * @author Synida Pry
+     */
+    public function testInvalidWord()
+    {
+        $dictionaryPath = $this->dictionaryDir . 'test.' . DictionaryEditor::DICTIONARY_EXTENSION;
+
+        $wordToEdit = 'word1';
+        $targetWord = '    ';
+        file_put_contents($dictionaryPath, $wordToEdit . PHP_EOL . $targetWord . PHP_EOL);
+
+        $dictionaryEditor = new DictionaryEditor();
+
+        $result = $dictionaryEditor->editWord($dictionaryPath, $wordToEdit, $targetWord);
+
+        $this->assertFalse($result);
+        $this->assertEquals('This word is invalid', $dictionaryEditor->getMessage());
+
+        $result = $dictionaryEditor->addWord($dictionaryPath, $targetWord);
+
+        $this->assertFalse($result);
+        $this->assertEquals('This word is invalid', $dictionaryEditor->getMessage());
+
+        unlink($dictionaryPath);
+    }
 }
