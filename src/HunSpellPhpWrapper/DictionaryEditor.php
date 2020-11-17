@@ -133,26 +133,23 @@ class DictionaryEditor
      */
     public function addWord($path, $word)
     {
-        $dictionaryContent = file_get_contents($path);
-
-        $ext = pathinfo($path, PATHINFO_EXTENSION);
-
         // Check empty or invalid word
         if ($this->isInvalidWord($word)) {
             $this->message = 'This word is invalid';
             return false;
         }
 
-        if (strpos($dictionaryContent, $word) !== false) {
-            $this->message = 'The word already exists in the database';
-            return false;
-        }
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
 
-        $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
-        $words = explode(PHP_EOL, $dictionaryContent);
+        // Returns with the words of the dictionary or template found on the specified path.
+        $words = $this->getDictionaryWords($path);
 
-        if (isset($words[0]) && is_numeric($words[0])) {
-            unset($words[0]);
+        foreach ($words as $currentWord) {
+            $wordParts = explode('/', $currentWord);
+            if (strtolower($wordParts[0]) === strtolower($word)) {
+                $this->message = 'The word already exists in the database';
+                return false;
+            }
         }
 
         $words[] = $word;
@@ -202,43 +199,41 @@ class DictionaryEditor
      */
     public function deleteWord($path, $word)
     {
-        $dictionaryContent = file_get_contents($path);
-
         $ext = pathinfo($path, PATHINFO_EXTENSION);
 
-        if (strpos($dictionaryContent, $word) !== false) {
-            $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
-            $words = explode(PHP_EOL, $dictionaryContent);
+        // Returns with the words of the dictionary or template found on the specified path.
+        $words = $this->getDictionaryWords($path);
 
-            if (isset($words[0]) && is_numeric($words[0])) {
-                unset($words[0]);
+        $found = false;
+        foreach ($words as $key => $currentWord) {
+            $wordParts = explode('/', $currentWord);
+
+            if (strtolower($wordParts[0]) === strtolower($word)) {
+                $found = true;
+                unset($words[$key]);
+                break;
             }
-
-            foreach ($words as $wordKey => $currentWord) {
-                if ($word === $currentWord) {
-                    unset($words[$wordKey]);
-                    break;
-                }
-            }
-
-            $words = array_filter(
-                $words,
-                function ($value) {
-                    return !is_null($value) && $value !== '' && $value !== PHP_EOL;
-                }
-            );
-
-            if ($ext !== static::TEMPLATE_EXTENSION) {
-                array_unshift($words, count($words));
-            }
-
-            file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
-
-            return true;
         }
 
-        $this->message = "The defined dictionary({$path}) does not contain this word({$word})";
-        return false;
+        if (!$found) {
+            $this->message = "The defined dictionary({$path}) does not contain this word({$word})";
+            return false;
+        }
+
+        $words = array_filter(
+            $words,
+            function ($value) {
+                return !is_null($value) && $value !== '' && $value !== PHP_EOL;
+            }
+        );
+
+        if ($ext !== static::TEMPLATE_EXTENSION) {
+            array_unshift($words, count($words));
+        }
+
+        file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
+
+        return true;
     }
 
     /**
@@ -258,48 +253,47 @@ class DictionaryEditor
             return false;
         }
 
-        $dictionaryContent = file_get_contents($path);
-
         $ext = pathinfo($path, PATHINFO_EXTENSION);
 
-        if (strpos($dictionaryContent, $word) !== false) {
-            $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
-            $words = explode(PHP_EOL, $dictionaryContent);
+        // Returns with the words of the dictionary or template found on the specified path.
+        $words = $this->getDictionaryWords($path);
 
-            if (isset($words[0]) && is_numeric($words[0])) {
-                unset($words[0]);
+        $found = false;
+        foreach ($words as $key => $currentWord) {
+            $wordParts = explode('/', $currentWord);
+
+            if (strtolower($wordParts[0]) === strtolower($word)) {
+                $found = true;
+                break;
             }
-
-            if (in_array($modifiedWord, $words)) {
-                $this->message = 'This word is already in the dictionary';
-                return false;
-            }
-
-            foreach ($words as $wordKey => $currentWord) {
-                if ($word === $currentWord) {
-                    $words[$wordKey] = $modifiedWord;
-                    break;
-                }
-            }
-
-            $words = array_filter(
-                $words,
-                function ($value) {
-                    return !is_null($value) && $value !== '' && $value !== PHP_EOL;
-                }
-            );
-
-            if ($ext !== static::TEMPLATE_EXTENSION) {
-                array_unshift($words, count($words));
-            }
-
-            file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
-
-            return true;
         }
 
-        $this->message = "The defined dictionary({$path}) does not contain this word({$word})";
-        return false;
+        if (!$found || !isset($key)) {
+            $this->message = "The defined dictionary({$path}) does not contain this word({$word})";
+            return false;
+        }
+
+        if (in_array($modifiedWord, $words)) {
+            $this->message = 'This word is already in the dictionary';
+            return false;
+        }
+
+        $words[$key] = $modifiedWord;
+
+        $words = array_filter(
+            $words,
+            function ($value) {
+                return !is_null($value) && $value !== '' && $value !== PHP_EOL;
+            }
+        );
+
+        if ($ext !== static::TEMPLATE_EXTENSION) {
+            array_unshift($words, count($words));
+        }
+
+        file_put_contents($path, ltrim(implode(PHP_EOL, $words), PHP_EOL));
+
+        return true;
     }
 
     /**
@@ -332,5 +326,26 @@ class DictionaryEditor
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     * Returns with the words of the dictionary or template found on the specified path.
+     *
+     * @param string $path
+     * @return array
+     * @author Synida Pry
+     */
+    protected function getDictionaryWords($path)
+    {
+        $dictionaryContent = file_get_contents($path);
+
+        $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
+        $words = explode(PHP_EOL, $dictionaryContent);
+
+        if (isset($words[0]) && is_numeric($words[0])) {
+            unset($words[0]);
+        }
+
+        return $words;
     }
 }
