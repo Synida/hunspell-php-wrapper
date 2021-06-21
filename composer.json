@@ -22,7 +22,7 @@
     },
     "require": {
         "php": "^7.0",
-        "composer/composer": "^1.0",
+        "composer/composer": "^1.10.22",
         "ext-json": "*",
         "ext-intl": "*"
     },
