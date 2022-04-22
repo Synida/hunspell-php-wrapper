@@ -1,7 +1,7 @@
 {
     "name": "synida/hunspell-php-wrapper",
     "license": "MIT",
-    "description": "PHP wrapper for HunSpell with threading support. Focuses only for the suggestions atm.",
+    "description": "PHP wrapper for HunSpell with threading support and custom dictionary support.",
     "keywords": ["spelling", "spellcheck", "spellchecker", "spell-check", "spell-checker", "hunspell", "wrapper", "threading", "multithreading"],
     "homepage": "https://github.com/Synida/hunspell-php-wrapper",
     "type": "library",
@@ -22,7 +22,7 @@
     },
     "require": {
         "php": "^7.0",
-        "composer/composer": "^1.10.22",
+        "composer/composer": "^1.10.23 || ^2.1.9",
         "ext-json": "*",
         "ext-intl": "*"
     },
