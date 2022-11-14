@@ -21,7 +21,7 @@
         "php-coveralls/php-coveralls": "^2.2"
     },
     "require": {
-        "php": "^7.0",
+        "php": "^7.0 || ^8.0",
         "composer/composer": "^1.10.23 || ^2.1.9",
         "ext-json": "*",
         "ext-intl": "*"
