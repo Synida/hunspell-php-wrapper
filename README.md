@@ -10,7 +10,7 @@ and a simple dictionary editor.
 Hunspell - you won't be able to use this library without it.
 
 If you wish like to use this module in multithreading mode, then you need the following too:
-- PHP ^7.2
+- PHP ^7.2 || ^8.0
 - PHP with ZTS enabled
 - [parallel](https://github.com/krakjoe/parallel) extension - you might have to compile it from source
 
@@ -28,6 +28,11 @@ This installation script will use the parallel module if it's installed,
 otherwise the thread number will be set to 1.
 
 You may install your own dictionaries for the hunspell.
+
+### Performance information
+With single threaded mode, the processing time for hunspell might take around 30sec - the default php request timout limit in the config - for around 15-16k words long text with the 91% typing accuracy rate.
+
+With multithreading mode, doubling the CPU count will result in a bit less then double processing time as well, so the more CPU your environment has, the faster the processing will be.
 
 ## Spellchecker
 
