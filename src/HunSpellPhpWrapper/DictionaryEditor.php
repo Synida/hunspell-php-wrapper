@@ -53,7 +53,7 @@ class DictionaryEditor
      * @return bool
      * @author Synida Pry
      */
-    public function create($path)
+    public function create(string $path)
     {
         $pathParts = explode('.', $path);
         $extension = end($pathParts);
@@ -97,7 +97,7 @@ class DictionaryEditor
      * @return bool
      * @author Synida Pry
      */
-    public function delete($path)
+    public function delete(string $path)
     {
         $pathParts = explode('.', $path);
         $extension = end($pathParts);
@@ -131,7 +131,7 @@ class DictionaryEditor
      * @return bool
      * @author Synida Pry
      */
-    public function addWord($path, $word)
+    public function addWord(string $path, string $word)
     {
         // Check empty or invalid word
         if ($this->isInvalidWord($word)) {
@@ -180,7 +180,7 @@ class DictionaryEditor
      * @return bool
      * @author Synida Pry
      */
-    protected function isInvalidWord($word)
+    protected function isInvalidWord(string $word)
     {
         if (empty(trim($word))) {
             return true;
@@ -197,7 +197,7 @@ class DictionaryEditor
      * @return bool
      * @author Synida Pry
      */
-    public function deleteWord($path, $word)
+    public function deleteWord(string $path, string $word)
     {
         $ext = pathinfo($path, PATHINFO_EXTENSION);
 
@@ -245,7 +245,7 @@ class DictionaryEditor
      * @return bool
      * @author Synida Pry
      */
-    public function editWord($path, $word, $modifiedWord)
+    public function editWord(string $path, string $word, string $modifiedWord)
     {
         // Check empty or invalid word
         if ($this->isInvalidWord($modifiedWord)) {
@@ -303,11 +303,11 @@ class DictionaryEditor
      * @return array
      * @author Synida Pry
      */
-    public function listWords($path)
+    public function listWords(string $path)
     {
         $dictionaryContent = file_get_contents($path);
 
-        $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
+        $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, (string)$dictionaryContent);
         $result = explode(PHP_EOL, $dictionaryContent);
 
         if (isset($result[0]) && is_numeric($result[0])) {
@@ -335,11 +335,11 @@ class DictionaryEditor
      * @return array
      * @author Synida Pry
      */
-    protected function getDictionaryWords($path)
+    protected function getDictionaryWords(string $path)
     {
         $dictionaryContent = file_get_contents($path);
 
-        $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, $dictionaryContent);
+        $dictionaryContent = preg_replace('/(\r\n)|\r|\n/', PHP_EOL, (string)$dictionaryContent);
         $words = explode(PHP_EOL, $dictionaryContent);
 
         if (isset($words[0]) && is_numeric($words[0])) {

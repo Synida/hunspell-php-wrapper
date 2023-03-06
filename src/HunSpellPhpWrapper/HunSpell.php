@@ -160,11 +160,11 @@ class HunSpell
      * @author Synida Pry
      */
     public function __construct(
-        $encoding = 'en_GB.utf8',
-        $dictionary = 'en_GB',
-        $responseType = 'json',
-        $threads = 1,
-        $wordThreadRatio = 1
+        string $encoding = 'en_GB.utf8',
+        string $dictionary = 'en_GB',
+        string $responseType = 'json',
+        int $threads = 1,
+        int $wordThreadRatio = 1
     ) {
         $this->inputValidator = new InputValidator();
 
@@ -208,7 +208,7 @@ class HunSpell
      * @throws InvalidResponseTypeException
      * @author Synida Pry
      */
-    public function setResponseType($responseType)
+    public function setResponseType(string $responseType)
     {
         // Validates the response type
         $this->inputValidator->validateResponseType($responseType);
@@ -234,7 +234,7 @@ class HunSpell
      * @return void
      * @author Synida Pry
      */
-    public function setDictionary($dictionary)
+    public function setDictionary(string $dictionary)
     {
         $this->dictionary = $dictionary;
     }
@@ -257,7 +257,7 @@ class HunSpell
      * @return void
      * @author Synida Pry
      */
-    public function setEncoding($encoding)
+    public function setEncoding(string $encoding)
     {
         $this->encoding = $encoding;
     }
@@ -270,7 +270,7 @@ class HunSpell
      * @throws Exception
      * @author Synida Pry
      */
-    public function suggest($text)
+    public function suggest(string $text)
     {
         $result = [];
 
@@ -286,7 +286,7 @@ class HunSpell
                 // Executes the find command on a text.
                 : $this->findCommand($text);
 
-        preg_replace('/(\r\n)|\r|\n/', "\n", $spellCheckResults);
+        preg_replace('/(\r\n)|\r|\n/', "\n", (string)$spellCheckResults);
         $resultLines = explode("\n", trim($spellCheckResults));
         unset($resultLines[0]);
 
@@ -342,7 +342,7 @@ class HunSpell
      * @throws Exception
      * @author Synida Pry
      */
-    protected function findWithThreading($text, $wordCount)
+    protected function findWithThreading(string $text, int $wordCount)
     {
         // Returns with the configured max thread count.
         $optimalThread = $this->getOptimalThreads($wordCount);
@@ -355,9 +355,7 @@ class HunSpell
         $result = '';
         $threads = [];
         try {
-            $threadCount = (int)ceil(
-                $wordCount / $chunkSize > $optimalThread ? $optimalThread : $wordCount / $chunkSize
-            );
+            $threadCount = (int)ceil(min($wordCount / $chunkSize, $optimalThread));
             for ($i = 0; $i < $threadCount; $i++) {
                 $chunk = '';
                 $initPosition = $i * $chunkSize;
@@ -394,7 +392,7 @@ class HunSpell
      * @return int
      * @author Synida Pry
      */
-    public function getOptimalThreads($wordCount)
+    public function getOptimalThreads(int $wordCount)
     {
         return $wordCount / $this->minWordPerThread >= $this->maxThreads
             ? $this->maxThreads : (int)$wordCount / $this->minWordPerThread;
@@ -407,7 +405,7 @@ class HunSpell
      * @return string
      * @author Synida Pry
      */
-    protected function findCommand($text)
+    protected function findCommand(string $text)
     {
         $encode = strncasecmp(PHP_OS, 'WIN', 3) === 0 ? '' : "LANG=\"{$this->encoding}\"; ";
 
@@ -433,7 +431,7 @@ class HunSpell
      * @throws InvalidThreadNumberException
      * @author Synida Pry
      */
-    public function setMaxThreads($maxThreads)
+    public function setMaxThreads(int $maxThreads)
     {
         // Validates the thread number.
         $this->inputValidator->validateThreadNumber($maxThreads);
