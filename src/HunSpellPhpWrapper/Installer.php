@@ -89,7 +89,7 @@ class Installer
      * @throws InvalidThreadNumberException
      * @author Synida Pry
      */
-    public static function configureWordPerThreadRatio($threads = 2)
+    public static function configureWordPerThreadRatio(int $threads = 2)
     {
         if (!extension_loaded('parallel')) {
             return 1;

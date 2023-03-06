@@ -66,7 +66,7 @@ class DictionaryTest extends TestCase
         $fileContent = file_get_contents($dictionaryPath);
         $fileWords = explode("\n", $fileContent);
 
-        $fileWords = preg_replace('/(\r\n)|\r|\n/', '', $fileWords);
+        $fileWords = preg_replace('/(\r\n)|\r|\n/', '', (string)$fileWords);
 
         $this->assertTrue(isset($fileWords[0]));
         $this->assertTrue(is_numeric($fileWords[0]));
@@ -234,7 +234,7 @@ class DictionaryTest extends TestCase
     }
 
     /**
-     * Trying to delete non existing word from the dictionary
+     * Trying to delete non-existing word from the dictionary
      *
      * @return void
      * @author Synida Pry
@@ -259,7 +259,7 @@ class DictionaryTest extends TestCase
     }
 
     /**
-     * Trying to modify non existing word
+     * Trying to modify non-existing word
      *
      * @return void
      * @author Synida Pry
@@ -285,7 +285,7 @@ class DictionaryTest extends TestCase
     }
 
     /**
-     * Trying to edit a word to an another existing word
+     * Trying to edit a word to an existing word
      *
      * @return void
      * @author Synida Pry

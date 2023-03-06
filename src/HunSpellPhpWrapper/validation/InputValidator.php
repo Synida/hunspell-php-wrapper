@@ -18,7 +18,7 @@ class InputValidator
     /**
      * Validates the thread number.
      *
-     * @param int $threadNumber
+     * @param mixed $threadNumber
      * @return void
      * @throws InvalidThreadNumberException
      * @author Synida Pry
@@ -28,7 +28,7 @@ class InputValidator
         // Validates the thread number parameter.
         if (!$this->isValidThreadNumber($threadNumber)) {
             throw new InvalidThreadNumberException(
-                sprintf('Thread number must be a positive integer')
+                'Thread number must be a positive integer'
             );
         }
     }
@@ -36,7 +36,7 @@ class InputValidator
     /**
      * Validates the response type
      *
-     * @param string $responseType
+     * @param mixed $responseType
      * @return void
      * @throws InvalidResponseTypeException
      * @author Synida Pry
@@ -57,19 +57,19 @@ class InputValidator
     /**
      * Validates the thread number parameter.
      *
-     * @param int $threadNumber
+     * @param mixed $threadNumber
      * @return bool
      * @author Synida Pry
      */
     protected function isValidThreadNumber($threadNumber)
     {
-        return is_numeric($threadNumber) && is_int($threadNumber) && $threadNumber > 0;
+        return is_int($threadNumber) && $threadNumber > 0;
     }
 
     /**
      * Checking if the response type is valid or not.
      *
-     * @param string $responseType
+     * @param mixed $responseType
      * @return bool
      * @author Synida Pry
      */
