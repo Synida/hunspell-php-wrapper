@@ -287,7 +287,7 @@ class HunSpell
                 : $this->findCommand($text);
 
         preg_replace('/(\r\n)|\r|\n/', "\n", (string)$spellCheckResults);
-        $resultLines = explode("\n", trim($spellCheckResults));
+        $resultLines = explode("\n", trim((string)$spellCheckResults));
         unset($resultLines[0]);
 
         foreach ($resultLines as $line) {
